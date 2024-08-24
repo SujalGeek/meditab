@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20'; // Correct import statement
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -7,7 +7,6 @@ passport.use(new GoogleStrategy({
     callbackURL: '/api/v1/user/auth/google/callback'
   },
   function(accessToken, refreshToken, profile, done) {
-    // Handle user profile and authentication here
     return done(null, profile);
   }
 ));

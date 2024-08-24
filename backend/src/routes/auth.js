@@ -19,7 +19,6 @@ passport.use(new GoogleStrategy({
 ));
 
 
-// Serialize and deserialize user
 passport.serializeUser((user, done) => {
   done(null, user);
 });
