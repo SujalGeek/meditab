@@ -10,15 +10,11 @@ import jwt from "jsonwebtoken";
 
 
 const doctorSchema = new mongoose.Schema({
-    firstName: {
+    doctorName: {
         type: String,
-        required: [true, "First Name is required"],
-        minLength: [3, "First Name contaians at least 3 characters"],
-    },
-    lastName: {
-        type: String,
-        required: [true, "Last Name is required"],
-        minLength: [3, "Last Name contaians at least 3 characters"],
+        required: [true, "Name is required"],
+        minLength: [3, "Name contaians at least 3 characters"],
+        maxLength: 20,
     },
     email: {
         type: String,
@@ -39,7 +35,7 @@ const doctorSchema = new mongoose.Schema({
         select: false,
     },
     address: {
-        country: {
+        line1: {
             type: String,
             required: true
         },
@@ -55,7 +51,7 @@ const doctorSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: [true, "Gender Is Required!"],
-        enum: ["Male", "Female"],
+        enum: ["Male", "Female", "Other"],
     },
     department: {
         name: {
@@ -95,23 +91,19 @@ const doctorSchema = new mongoose.Schema({
             required: true
         }
     },
+    appointmentCharges: {
+        type: String,
+        required: true,
+    },
     docAvatar: {
         type: String, // cloudinary url
         required: true,
-    },
-    role: {
-        type: String,
-        required: true,
-        enum: ["Admin", "Patient", "Doctor"]
     },
     languagesKnown: {
         type: [String],  //Array of languages
         required: true
     },
-    appointmentCharges: {
-        type: String,
-        required: true
-    }
+   
 },
     { timestamps: true });
 

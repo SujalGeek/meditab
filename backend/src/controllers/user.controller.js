@@ -8,10 +8,10 @@ import { Appointment } from "../models/appointment.model.js";
 //! Register the user
 export const patientRegister = asyncHandler(async (req, res, next) => {
     // taking the info from the user
-    const { firstName, lastName, email, phone, address, dob, gender, password } = req.body;
+    const { userName, email, phone, address, dob, gender, password } = req.body;
 
     // checking the info provided by the user
-    if (!firstName || !lastName || !email || !phone || !address || !dob || !gender || !password) {
+    if (!userName|| !email || !phone || !address || !dob || !gender || !password) {
         throw new ApiError(400, "Please Fill Full Form!");
     }
 
@@ -23,8 +23,7 @@ export const patientRegister = asyncHandler(async (req, res, next) => {
 
     // finally create the user
     const createdUser = await User.create({
-        firstName,
-        lastName,
+        userName,
         email,
         phone,
         address,
@@ -34,9 +33,9 @@ export const patientRegister = asyncHandler(async (req, res, next) => {
         role: "Patient",
     });
     generateToken(createdUser, "User Registrated Successfully!", 200, res);
-    // return res.status(201).json(
-    //     new ApiResponse(200, createdUser, "User registered Successfully")
-    // )
+        return res.status(201).json(
+        new ApiResponse(200, createdUser, "User registered Successfully")
+    )
 });
 
 
@@ -97,12 +96,10 @@ export const getUserAppointmentInfo = asyncHandler(async (req, res, next) => {
                     city: 1,
                     pincode: 1,
                     department: 1,
-                    'patientDetails.firstName': 1,
-                    'patientDetails.lastName': 1,
+                    'patientDetails.userName': 1,
                     'patientDetails.email': 1,
                     'patientDetails.phone': 1,
-                    'doctorDetails.firstName': 1,
-                    'doctorDetails.lastName': 1,
+                    'doctorDetails.doctorName': 1,
                     'doctorDetails.email': 1,
                     'doctorDetails.phone': 1,
                     'doctorDetails.department': 1,

@@ -17,19 +17,22 @@ const appointmentSchema = new mongoose.Schema({
         ref: "Doctor", // Reference to the doctor who will handle the appointment
         required: [true, "Doctor ID is required"],
     },
-    doctorFirstName: {
+    doctorName: {
         type: String,
     },
-    doctorLastName: {
-        type: String,
-    },
-    experience: {
-        type: String,
-    },
+    // experience: {
+    //     type: String,
+    // },
     appointmentCharges: {
-        type: String,
+        type: mongoose.Schema.Types.String,
+        ref: "Doctor",
+        required: true,
     },
-    city: {
+    address: {
+        type: String,
+        required: [true, "Address is required"],
+    },
+    City: {
         type: String,
         required: [true, "City is required"],
     },
@@ -47,7 +50,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Pending", "Accepted", "Rejected"],
+        enum: ["Pending", "Accepted", "Rejected", "diagnosed"],
         default: "Pending",
     },
 }, { timestamps: true });

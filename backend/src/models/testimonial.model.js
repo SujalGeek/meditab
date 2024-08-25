@@ -20,6 +20,14 @@ const TestimonialSchema = new mongoose.Schema(
             type: String,
             required: [true, "State is required!"],
         },
+        city: {
+            type: String,
+            required: [true, "City is required!"],
+        },
+        pincode: {
+            type: String,
+            required: [true, "Pincode is required!"],
+        },
         review: {
             type: String,
         },

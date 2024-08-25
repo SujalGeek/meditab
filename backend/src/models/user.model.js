@@ -11,15 +11,10 @@ import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
     {
-        firstName: {
+        userName: {
             type: String,
             required: [true, "First Name is required"],
             minLength: [3, "First Name contaians at least 3 characters"],
-        },
-        lastName: {
-            type: String,
-            required: [true, "Last Name is required"],
-            minLength: [3, "Last Name contaians at least 3 characters"],
         },
         email: {
             type: String,
@@ -34,15 +29,18 @@ const userSchema = new mongoose.Schema(
 
         },
         address: {
+            // line1: {
+                type: String,
+                required: true
+             },
             city: {
                 type: String,
                 // required: true
             },
-            country: {
+            pincode: {
                 type: String,
                 // required: true
-            }
-        },
+            },
         password: {
             type: String,
             required: true,
@@ -51,17 +49,18 @@ const userSchema = new mongoose.Schema(
         },
         dob: {
             type: Date,
-            required: [true, "DOB Is Required!"],
+            // required: [true, "DOB Is Required!"],
         },
         gender: {
             type: String,
             required: [true, "Gender Is Required!"],
-            enum: ["Male", "Female"],
+            enum: ["Male", "Female", "Other"],
         },
         role: {
             type: String,
             required: true,
-            enum: ["Admin", "Patient", "Doctor"]
+            enum: ["Admin", "Patient", "Doctor"],
+            default: "Patient",
         },
     },
     { timestamps: true }
