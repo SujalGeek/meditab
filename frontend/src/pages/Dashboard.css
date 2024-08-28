@@ -1,0 +1,174 @@
+.dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #e8e8eb; /* Light background for the entire dashboard */
+}
+
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #204049; /* Dark color for the title */
+}
+
+.dashboard-item {
+  margin-bottom: 30px;
+  background-color: #b3dada; /* Main color for the items */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-item-title {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #204049; /* Dark color for the section titles */
+}
+
+.appointment-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.appointment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #ffffff; /* White background for appointment items */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-details {
+  flex-grow: 1;
+  color: #204049; /* Dark color for appointment details */
+}
+
+.appointment-actions {
+  display: flex;
+  align-items: center;
+}
+
+.status-toggle {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #6a9095; /* Color for the slider background */
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: #fff; /* White color for the slider knob */
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #204049; /* Dark color for the slider when checked */
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.status-text {
+  margin-left: 10px;
+  color: #204049; /* Dark color for the status text */
+}
+
+.edit-btn {
+  background-color: #6a9095; /* Color for the edit button */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.edit-btn:hover {
+  background-color: #204049; /* Darker color for the button on hover */
+}
+
+.edit-form {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff; /* White background for the form */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 300px;
+}
+
+.edit-form h2 {
+  margin-bottom: 10px;
+  color: #204049; /* Dark color for the form title */
+}
+
+.edit-form label {
+  display: block;
+  margin-bottom: 10px;
+  color: #204049; /* Dark color for form labels */
+}
+
+.edit-form input,
+.edit-form select {
+  width: calc(100% - 16px);
+  padding: 8px;
+  border: 1px solid #204049;
+  border-radius: 4px;
+}
+
+.edit-form button {
+  background-color: #6a9095; /* Color for the save button */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.edit-form button:last-of-type {
+  background-color: #b3dada; /* Color for the cancel button */
+}
+
+.edit-form button:hover {
+  background-color: #204049; /* Darker color for buttons on hover */
+}
