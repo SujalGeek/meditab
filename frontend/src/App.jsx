@@ -18,7 +18,7 @@ import {
   PrivacyPolicyPage,
   TermsAndConditionsPage,
   OrderHistoryPage,
-  // Appointment,
+  Appointment,
   AddtoCart,
   ProductsByCategory,
   // SingleMedicine,
@@ -34,7 +34,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/alldoctors" element={<AllDoctorsPage />} />
-          {/* <Route path="/appointment" element={<Appointment />} /> */}
+          <Route path="/appointment" element={<Appointment />} />
 
           <Route path="/specialities" element={<SpecialitiesPage />} />
 

@@ -296,6 +296,12 @@ function SignupPage() {
             <button className="bg-main_theme text-white font-bold py-2 px-4 rounded-md mt-4">
               Create New Account
             </button>
+            <a
+    href="http://localhost:3000/api/v1/user/auth/google"
+    className="btn btn-google mt-5 bg-main_theme hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md mb-4 text-center"
+>
+    Sign in with Google
+</a>
             <Link to="/login">
               <p
                 className="my-3 p-1 md:p-0 text-purple-600 hover:underline"

@@ -1,0 +1,59 @@
+.appointment-container {
+    margin: 50px;
+    padding: 50px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    background-color: #0b767b66;
+    font-family: Arial, sans-serif;
+    height: 600px; 
+}
+
+.form-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container input,
+.form-container select {
+    margin-bottom: 15px;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-container button {
+    padding: 15px;
+    background-color: #03565A; 
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #03565A;
+}
+
+.text-container {
+    flex: 2.5;
+    background-image: url('/Users/pateljillspareshkumar/Downloads/meditab-master/frontend/public/online_appointment.png');
+    background-size: 70% 110%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 20px; /* Apply the border-radius to round the edges */
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: white;
+}
