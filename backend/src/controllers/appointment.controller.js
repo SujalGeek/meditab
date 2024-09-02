@@ -1,97 +1,204 @@
-import asyncHandler from "../utilis/asyncHandler.js";
+import { Appointment } from "../models/appointment.model.js";
+import { Doctor } from "../models/doctor.model.js";
+import { User } from "../models/user.model.js";
+import { asyncHandler } from "../utilis/asyncHandler.js";
 import { ApiError } from "../utilis/ApiError.js";
 import { ApiResponse } from "../utilis/ApiResponse.js";
-import { Appointment } from "../models/appointment.model.js";
+import sgMail from "@sendgrid/mail";
 
-// Controller function for booking an appointment
-export const bookAppointment = asyncHandler(async (req, res, next) => {
-    const patientId = req.user; // Get patient ID from authenticated user
-    const doctorId = req.doctor; // Get doctor ID from authenticated doctor
+// Initialize SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-    const { city, pincode, appointmentDate, department } = req.body;
+// Helper function to send email notifications
+const sendNotification = async (recipient, subject, message) => {
+  const msg = {
+    to: recipient,
+    from: "hospital@example.com",
+    subject: subject,
+    text: message,
+  };
 
-    // Check if all required fields are provided
-    if (!city || !pincode || !appointmentDate || !department) {
-        throw new ApiError(400, "Please provide all required fields");
-    }
+  try {
+    await sgMail.send(msg);
+  } catch (error) {
+    console.error("Error sending email", error);
+    throw new ApiError(500, "Failed to send email notification");
+  }
+};
 
+// Create a new appointment
+export const createAppointment = asyncHandler(async (req, res, next) => {
+  const {
+    patient,
+    doctor,
+    appointmentDate,
+    address,
+    City,
+    pincode,
+    category,
+    appointmentCharges,
+  } = req.body;
 
-    // Check if appointment already exists for this patient and doctor
-    const existedAppointment = await Appointment.findOne({
-        patient: patientId,
-        doctor: doctorId
-    });
+  // Validate patient and doctor existence
+  const existingPatient = await User.findById(patient);
+  const existingDoctor = await Doctor.findById(doctor);
 
-    if (existedAppointment) {
-        throw new ApiError(400, "Your appointment was already booked. Please wait for any update!");
-    }
+  if (!existingPatient || !existingDoctor) {
+    return next(new ApiError(400, "Invalid patient or doctor ID"));
+  }
 
+  // Check if the doctor is available on the given date
+  const isDoctorAvailable = await checkDoctorAvailability(
+    doctor,
+    appointmentDate,
+  );
+  if (!isDoctorAvailable) {
+    return next(
+      new ApiError(400, "Doctor is not available at the selected time"),
+    );
+  }
 
-    // Create the appointment
-    const createdAppointment = await Appointment.create({
-        patient: patientId,
-        patientFirstName: patientId.firstName,
-        patientLastName: patientId.lastName,
-        doctor: doctorId,
-        doctorFirstName: doctorId.firstName,
-        doctorLastName: doctorId.lastName,
-        experience: doctorId.experience,
-        appointmentCharges: doctorId.appointmentCharges,
-        city,
-        pincode,
-        appointmentDate,
-        department,
-    });
+  // Create appointment
+  const appointment = new Appointment({
+    patient,
+    patientFirstName: existingPatient.firstName,
+    patientLastName: existingPatient.lastName,
+    doctor,
+    doctorName: existingDoctor.doctorName,
+    appointmentCharges,
+    address,
+    City,
+    pincode,
+    appointmentDate,
+    category,
+  });
 
-    return res.status(201).json(
-        new ApiResponse(200, createdAppointment, "Your Appointment Booked!")
-    )
+  await appointment.save();
+
+  // Notify the patient
+  await sendNotification(
+    existingPatient.email,
+    "Appointment Scheduled",
+    `Dear ${existingPatient.firstName}, your appointment with Dr. ${existingDoctor.doctorName} has been scheduled for ${appointmentDate}.`,
+  );
+
+  res
+    .status(201)
+    .json(
+      new ApiResponse(201, appointment, "Appointment created successfully"),
+    );
 });
 
-// Controller function for updating an appointment
+// Get all appointments
+export const getAppointments = asyncHandler(async (req, res, next) => {
+  const appointments = await Appointment.find()
+    .populate("patient", "firstName lastName email")
+    .populate("doctor", "doctorName");
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, appointments, "Appointments retrieved successfully"),
+    );
+});
+
+// Get a single appointment by ID
+export const getAppointmentById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const appointment = await Appointment.findById(id)
+    .populate("patient", "firstName lastName email")
+    .populate("doctor", "doctorName");
+
+  if (!appointment) {
+    return next(new ApiError(404, "Appointment not found"));
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, appointment, "Appointment retrieved successfully"),
+    );
+});
+
+// Update appointment status
 export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { status } = req.body;
 
-    const { id } = req.params;
+  const appointment = await Appointment.findById(id).populate(
+    "patient",
+    "email",
+  );
 
-    let appointment = await Appointment.findById(id);
-    if (!appointment) {
-        throw new ApiError(404, "Appointment not found");
-    }
+  if (!appointment) {
+    return next(new ApiError(404, "Appointment not found"));
+  }
 
-    appointment = await Appointment.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-    });
-    res
-        .status(200)
-        .json(new ApiResponse(200, appointment, "Appointment Status Updated!"));
+  appointment.status = status;
+  await appointment.save();
+
+  // Notify the patient about the status update
+  await sendNotification(
+    appointment.patient.email,
+    "Appointment Status Update",
+    `Dear ${appointment.patient.firstName}, your appointment status has been updated to ${status}.`,
+  );
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        appointment,
+        "Appointment status updated successfully",
+      ),
+    );
 });
 
-// Controller function for deleting an appointment
+// Delete an appointment
 export const deleteAppointment = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
 
-    const { id } = req.params;
+  const appointment = await Appointment.findByIdAndDelete(id);
 
-    let appointment = await Appointment.findById(id);
-    if (!appointment) {
-        throw new ApiError(404, "Appointment not found");
-    }
-    // Find the appointment by ID and delete it
-    await appointment.deleteOne();
+  if (!appointment) {
+    return next(new ApiError(404, "Appointment not found"));
+  }
 
-    res
-        .status(200)
-        .json(new ApiResponse(200, appointment, "Appointment Succesfully Deleted"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "Appointment deleted successfully"));
 });
 
-// Controller function for getting all appointments
-export const getAllAppointments = asyncHandler(async (req, res, next) => {
-
-    // Find all appointments
-    const appointments = await Appointment.find();
-
-    res
-        .status(200)
-        .json(new ApiResponse(200, appointments, "All Appointments List"));
-});
+// Check doctor availability and Implement logic to check doctor's availability
+export const checkDoctorAvailability = async (doctorId, appointmentDate) => {
+  // Find the doctor by ID
+  const doctor = await Doctor.findById(doctorId);
+  // Check if the doctor exists
+  if (!doctor) {
+    throw new ApiError(404, "Doctor not found");
+  }
+  // Check if the doctor has availability on the specified date
+  const availability = doctor.availabelSlots.find((slot) => {
+    return slot.days.includes(appointmentDate.getDay());
+  });
+  // If no availability found, return false
+  if (!availability) {
+    return false;
+  }
+  // Check if the doctor has any existing appointments on the specified date
+  const existingAppointments = await Appointment.countDocuments({
+    doctor: doctorId,
+    checkInDate: appointmentDate,
+    status: { $in: ["Pending", "Accepted"] },
+  });
+  // If the doctor has reached their appointment limit, return false
+  if (existingAppointments >= 25) {
+    // Assuming each doctor can handle 10 appointments per day
+    return false;
+  } else {
+    // If the doctor is available, return true
+    return true;
+  }
+};

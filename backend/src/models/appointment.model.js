@@ -44,9 +44,9 @@ const appointmentSchema = new mongoose.Schema({
         type: Date,
         required: [true, "Appointment date is required"],
     },
-    department: {
+    category: {
         type: String,
-        required: [true, "department is required"],
+        required: [true, "category is required"],
     },
     status: {
         type: String,
