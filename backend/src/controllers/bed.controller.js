@@ -1,7 +1,7 @@
 import { Bed } from '../models/bed.model.js';
-import { ApiError } from "../utilis/ApiError.js";
-import { ApiResponse } from "../utilis/ApiResponse.js";
-import asyncHandler from "../utilis/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const createBed = asyncHandler(async (req, res, next) => {
     const { bedNumber, bedType, availabilityStatus } = req.body;

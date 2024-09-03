@@ -1,7 +1,7 @@
 import { Doctor } from '../models/doctor.model.js';
-import { asyncHandler } from "../utilis/asyncHandler.js";
-import { ApiError } from "../utilis/ApiError.js";
-import { ApiResponse } from "../utilis/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // Create a new doctor
 export const createDoctor = asyncHandler(async (req, res, next) => {

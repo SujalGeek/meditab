@@ -1,7 +1,7 @@
-import asyncHandler from "../utilis/asyncHandler.js";
-import { ApiError } from "../utilis/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { generateToken } from "../utilis/jwtToken.js";
+import { generateToken } from "../utils/jwtToken.js";
 
 
 //! Adding a new admin

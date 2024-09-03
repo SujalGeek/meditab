@@ -1,8 +1,8 @@
-import asyncHandler from "../utilis/asyncHandler.js";
-import { ApiError } from "../utilis/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import { Testimonial } from "../models/testimonial.model.js";
-import { ApiResponse } from "../utilis/ApiResponse.js";
-import { uploadOnCloudinary } from "../utilis/cloudinary.js"; 
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js"; 
 
 //! Adding a new testimonial by any user
 export const addNewTestimonial = asyncHandler(async (req, res, next) => {

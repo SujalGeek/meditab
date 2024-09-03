@@ -1,9 +1,9 @@
 import validator from "validator";
 import { Medicine } from "../models/medicine.model.js";
-import { ApiError } from "../utilis/ApiError.js";
-import { ApiResponse } from "../utilis/ApiResponse.js";
-import asyncHandler from "../utilis/asyncHandler.js";
-import { uploadOnCloudinary } from "../utilis/cloudinary.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 //! Adding new medicine by admin only
 export const addNewMedicine = asyncHandler(async (req, res) => {

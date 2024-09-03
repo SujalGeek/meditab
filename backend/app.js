@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 import express from "express";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./src/utilis/ApiError.js";
+import { errorHandler } from "./src/utils/ApiError.js";
 import cors from "cors";
 
 const app = express();

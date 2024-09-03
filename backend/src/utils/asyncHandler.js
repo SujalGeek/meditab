@@ -3,6 +3,7 @@ const asyncHandler = (requestHandler) => {
         Promise.resolve(requestHandler(req, res, next)).catch(next);
     };
 };
+export default asyncHandler;
 
 // const asyncHandler = (requeustHandler) => async (req, res, next) => {
 //     try {
@@ -14,5 +15,3 @@ const asyncHandler = (requestHandler) => {
 //         })
 //     }
 // }
-
-export default asyncHandler;

@@ -1,4 +1,4 @@
-import { ApiResponse } from "../utilis/ApiResponse.js";
+import { ApiResponse } from "./ApiResponse.js";
 
 export const generateToken = (user, message, statusCode, res) => {
     const token = user.generateJsonWebToken();

@@ -7,7 +7,7 @@ import {
     deleteDoctor,
     doctorLogin
 } from '../controllers/doctor.controller.js';
-import { isAuthenticatedUser, authorizeRoles } from '../middleware/auth.js';
+import { isAdminAuthenticated } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -15,10 +15,10 @@ const router = express.Router();
 router.post('/login', doctorLogin);
 
 // Protected routes
-router.post('/register', isAuthenticatedUser, authorizeRoles('admin'), createDoctor);
-router.get('/', isAuthenticatedUser, getDoctors);
-router.get('/:id', isAuthenticatedUser, getDoctorById);
-router.put('/:id', isAuthenticatedUser, authorizeRoles('admin', 'doctor'), updateDoctor);
-router.delete('/:id', isAuthenticatedUser, authorizeRoles('admin'), deleteDoctor);
+router.post('/register', isAdminAuthenticated, createDoctor);
+router.get('/', isAdminAuthenticated, getDoctors);
+router.get('/:id', isAdminAuthenticated, getDoctorById);
+router.put('/:id', isAdminAuthenticated, updateDoctor);
+router.delete('/:id', isAdminAuthenticated, deleteDoctor);
 
 export default router;
