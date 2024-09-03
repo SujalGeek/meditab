@@ -2,7 +2,7 @@ import { OPDSchedule } from "../models/opdSchedule.model.js";
 import { Bed } from "../models/bed.model.js";
 import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import  asyncHandler  from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import Mailjet from "node-mailjet";
