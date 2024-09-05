@@ -40,6 +40,18 @@ const medicalDispensationSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  ward: {
+    type: String,
+    required: true,
+  },
+  bed: {
+    type: String,
+    required: true,
+  },
+  remark: {
+    type: String,
+    default: "",
+  },
 });
 
 const MedicalDispensation = mongoose.model(

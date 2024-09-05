@@ -1,10 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+
+import {
   getDispensationRecords,
   createDispensationRecord,
   updateDispensationRecord,
-} = require("../controllers/medical.dispensation");
+} from ("../controllers/medicalDispensation.controller");
 
 // Route to get all dispensation records for a patient
 router.get("/dispensation/:patientId", getDispensationRecords);

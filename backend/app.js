@@ -30,6 +30,7 @@ import doctorRouter from "./src/routes/doctor.routes.js";
 import appointmentRouter from "./src/routes/appointment.routes.js";
 import opdScheduleRouter from "./src/routes/opdSchedule.route.js";
 import bedRouter from "./src/routes/bed.routes.js";
+import MedicalDispensation from "./src/routes/medicalDispensation.route.js";
 // import medicineRouter from "./src/routes/medicine.routes.js";
 // import PaymentRouter from "./src/routes/payment.routes.js";
 // import TestimonialRouter from "./src/routes/testimonial.routes.js";
@@ -45,11 +46,11 @@ app.use("/api/v1/doctor", doctorRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 app.use("/api/v1/opdSchedule", opdScheduleRouter);
 app.use("/api/v1/bed", bedRouter);
+app.use("/api/v1/medical", MedicalDispensation);
 // app.use("/api/v1/medicines", medicineRouter);
 // app.use("/api/v1/medicines-cart", CartRouter)
 // app.use("/api/v1/payment", PaymentRouter)
 // app.use("/api/v1/testimonial", TestimonialRouter)
-
 
 // error middleware
 app.use(errorHandler);
