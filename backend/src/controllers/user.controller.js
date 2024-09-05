@@ -35,51 +35,57 @@ export const patientRegister = asyncHandler(async (req, res, next) => {
   const { userName, email, phone, address, dob, gender, password } = req.body;
 
   // Validate required fields
-  if (
-    !userName ||
-    !email ||
-    !phone ||
-    !address ||
-    !dob ||
-    !gender ||
-    !password
-  ) {
-    throw new ApiError(400, "Please fill out the full form!");
+  try {
+    if (
+      !userName ||
+      !email ||
+      !phone ||
+      !address ||
+      !dob ||
+      !gender ||
+      !password
+    ) {
+      throw new ApiError(400, "Please fill out the full form!");
+    }
+
+    // Check if the email is already registered
+    let existedUser = await User.findOne({ email });
+    if (existedUser) {
+      throw new ApiError(
+        400,
+        `${existedUser.role} with this email is already registered`,
+      );
+    }
+
+    // Check if the username is already taken
+    existedUser = await User.findOne({ userName });
+    if (existedUser) {
+      console.log(existedUser);
+      throw new ApiError(400, "Duplicate username entered");
+    }
+
+    // Create the user
+    const createdUser = await User.create({
+      userName,
+      email,
+      phone,
+      address,
+      dob,
+      gender,
+      password,
+      role: "Patient",
+    });
+
+    // Generate JWT token and respond
+    generateToken(createdUser, "User registered successfully!", 200, res);
+    return res
+      .status(201)
+      .json(new ApiResponse(200, createdUser, "User registered successfully"));
+  } catch (error) {
+    return res.json({
+      message: "error while creating the user!!",
+    });
   }
-
-  // Check if the email is already registered
-  let existedUser = await User.findOne({ email });
-  if (existedUser) {
-    throw new ApiError(
-      400,
-      `${existedUser.role} with this email is already registered`,
-    );
-  }
-
-  // Check if the username is already taken
-  existedUser = await User.findOne({ userName });
-  if (existedUser) {
-    console.log(existedUser);
-    throw new ApiError(400, "Duplicate username entered");
-  }
-
-  // Create the user
-  const createdUser = await User.create({
-    userName,
-    email,
-    phone,
-    address,
-    dob,
-    gender,
-    password,
-    role: "Patient",
-  });
-
-  // Generate JWT token and respond
-  generateToken(createdUser, "User registered successfully!", 200, res);
-  return res
-    .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 //   // finally create the user
 //   const createdUser = await User.create({

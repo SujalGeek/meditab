@@ -1,4 +1,4 @@
-import mongoose from ("mongoose");
+import mongoose from "mongoose";
 
 const medicalDispensationSchema = new mongoose.Schema({
   patientId: {
@@ -59,4 +59,4 @@ const MedicalDispensation = mongoose.model(
   medicalDispensationSchema,
 );
 
-module.exports = MedicalDispensation;
+export default MedicalDispensation;

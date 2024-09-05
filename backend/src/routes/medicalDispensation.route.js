@@ -1,12 +1,12 @@
 import express from "express";
-const router = express.Router();
 
 import {
   getDispensationRecords,
   createDispensationRecord,
   updateDispensationRecord,
-} from ("../controllers/medicalDispensation.controller");
+} from "../controllers/medicalDispensation.controller.js";
 
+const router = express.Router();
 // Route to get all dispensation records for a patient
 router.get("/dispensation/:patientId", getDispensationRecords);
 
@@ -16,4 +16,4 @@ router.post("/dispensation", createDispensationRecord);
 // Route to update an existing dispensation record
 router.put("/dispensation/:id", updateDispensationRecord);
 
-module.exports = router;
+export default router;

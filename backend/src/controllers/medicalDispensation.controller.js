@@ -1,9 +1,10 @@
-import MedicalDispensation from ("../models/medicalDispensation.model");
-import { asyncHandler } from ("../utils/asyncHandler");
-import { ApiError } from ("../utils/ApiError");
+// import MedicalDispensation from "../models/medicalDispensation.model";
+import MedicalDispensation from "../models/medicalDispensation.model.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 
 // Get all dispensation records for a patient along with ward and bed information
-const getDispensationRecords = asyncHandler(async (req, res, next) => {
+export const getDispensationRecords = asyncHandler(async (req, res, next) => {
   const records = await MedicalDispensation.find({
     patientId: req.params.patientId,
   });
@@ -17,7 +18,7 @@ const getDispensationRecords = asyncHandler(async (req, res, next) => {
 });
 
 // Add a new dispensation record with embedded ward and bed information
-const createDispensationRecord = asyncHandler(async (req, res, next) => {
+export const createDispensationRecord = asyncHandler(async (req, res, next) => {
   const {
     patientId,
     morning,
@@ -47,7 +48,7 @@ const createDispensationRecord = asyncHandler(async (req, res, next) => {
 });
 
 // Update a dispensation record with embedded ward, bed, and remark information
-const updateDispensationRecord = asyncHandler(async (req, res, next) => {
+export const updateDispensationRecord = asyncHandler(async (req, res, next) => {
   const updatedRecord = await MedicalDispensation.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -61,8 +62,8 @@ const updateDispensationRecord = asyncHandler(async (req, res, next) => {
   res.json(updatedRecord);
 });
 
-module.exports = {
-  getDispensationRecords,
-  createDispensationRecord,
-  updateDispensationRecord,
-};
+// module.exports = {
+//   getDispensationRecords,
+//   createDispensationRecord,
+//   updateDispensationRecord,
+// };
