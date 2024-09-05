@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const medicalDispensationSchema = new mongoose.Schema({
   patientId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Patient",
+    ref: "User",
     required: true,
   },
   date: {
@@ -45,7 +45,8 @@ const medicalDispensationSchema = new mongoose.Schema({
     required: true,
   },
   bed: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Bed",
     required: true,
   },
   remark: {
@@ -54,7 +55,7 @@ const medicalDispensationSchema = new mongoose.Schema({
   },
 });
 
-const MedicalDispensation = mongoose.model(
+export const MedicalDispensation = mongoose.model(
   "MedicalDispensation",
   medicalDispensationSchema,
 );
