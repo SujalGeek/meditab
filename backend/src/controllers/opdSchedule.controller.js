@@ -1,8 +1,9 @@
+import mongoose from "mongoose";
 import { OPDSchedule } from "../models/opdSchedule.model.js";
 import { Bed } from "../models/bed.model.js";
 import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
-import  asyncHandler  from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import Mailjet from "node-mailjet";
@@ -11,10 +12,10 @@ import Mailjet from "node-mailjet";
 const mailjet = new Mailjet({
   apiKey: process.env.MAILJET_API_KEY,
   apiSecret: process.env.MAILJET_API_SECRET,
-});
+}); //tested successfully
 
 // Helper function to send email notifications
-const sendNotification = async (recipient, subject, message) => {
+const sendNotification = async (User, subject, message) => {
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: [
       {
@@ -24,7 +25,8 @@ const sendNotification = async (recipient, subject, message) => {
         },
         To: [
           {
-            Email: recipient,
+            Email: User.email,
+            Name: User.name,
           },
         ],
         Subject: subject,
@@ -38,18 +40,22 @@ const sendNotification = async (recipient, subject, message) => {
     console.error("Error sending email", error);
     throw new ApiError(500, "Failed to send email notification");
   }
-};
+}; //tested successfully
 export const scheduleOPD = asyncHandler(async (req, res, next) => {
-  const { patientId, doctorId, checkInDate, bedType, isUrgent } = req.body;
+  const pid = req.user?._id;
+  const dname = req.doctor?.name;
+  const { doctorName, checkInDate, Description, bedType, isUrgent } = req.body;
 
-  const patient = await User.findById(patientId);
-  const doctor = await Doctor.findById(doctorId);
+  const patient = await User.findById(pid);
+  console.log("patient ", pid);
+  const doctor = await Doctor.find(dname);
+  console.log("Doctor", dname);
 
   if (!patient || !doctor) {
     return next(new ApiError(400, "Invalid patient or doctor ID"));
   }
 
-  const isAvailable = await checkDoctorAvailability(doctorId, checkInDate);
+  const isAvailable = await checkDoctorAvailability(dname, checkInDate);
   if (!isAvailable) {
     return next(
       new ApiError(400, "Doctor is not available at the selected time"),
@@ -59,10 +65,11 @@ export const scheduleOPD = asyncHandler(async (req, res, next) => {
   let priority = isUrgent ? 1 : 3;
 
   const newOPDSchedule = new OPDSchedule({
-    patient: patientId,
-    doctor: doctorId,
+    patient: pid,
+    doctorName,
     checkInDate,
     bedType,
+    Description,
     status: "Waiting",
     priority,
   });
@@ -90,7 +97,7 @@ export const scheduleOPD = asyncHandler(async (req, res, next) => {
         "OPD appointment scheduled successfully",
       ),
     );
-});
+}); //tested successfully
 
 const handleUrgentAdmission = async (opdSchedule) => {
   const highPriorityBed = await Bed.findOne({
@@ -176,12 +183,12 @@ const handleUrgentAdmission = async (opdSchedule) => {
       );
     }
   }
-};
+}; //tested successfully
 
 const addToQueue = async (opdSchedule) => {
   opdSchedule.status = "Waiting";
   await opdSchedule.save();
-};
+}; // tested successfully
 
 export const getOPDSchedules = asyncHandler(async (req, res, next) => {
   const { date } = req.query;
@@ -191,10 +198,17 @@ export const getOPDSchedules = asyncHandler(async (req, res, next) => {
 
   const opdSchedules = await OPDSchedule.find({
     checkInDate: { $gte: startDate, $lt: endDate },
-    status: { $in: ["Waiting", "Allocated", "TemporarilyAllocated"] },
-  })
-    .populate("patient")
-    .populate("doctor");
+    status: {
+      $in: [
+        "Waiting",
+        "Allocated",
+        "TemporarilyAllocated",
+        "Completed",
+        "Cancelled",
+      ],
+    },
+  }).populate("patient");
+  // .populate("doctor");
 
   res
     .status(200)
@@ -205,11 +219,21 @@ export const getOPDSchedules = asyncHandler(async (req, res, next) => {
         "OPD schedules retrieved successfully",
       ),
     );
-});
+}); // tested successfully
 
 export const updateOPDScheduleStatus = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { status } = req.body;
+  // Validate id
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ApiError(400, "Invalid OPD schedule ID"));
+  }
+
+  // Validate status
+  // const validStatuses = ['Waiting', 'Allocated', 'TemporarilyAllocated', 'Completed', 'Cancelled'];
+  // if (!validStatuses.includes(status)) {
+  //   return next(new ApiError(400, "Invalid status. Allowed statuses are: " + validStatuses.join(', ')));
+  // }
 
   const opdSchedule = await OPDSchedule.findById(id).populate("patient");
   if (!opdSchedule) {
@@ -253,15 +277,23 @@ export const updateOPDScheduleStatus = asyncHandler(async (req, res, next) => {
         "OPD schedule status updated successfully",
       ),
     );
-});
+}); //tested successfully
 
 export const allocateBed = asyncHandler(async (req, res, next) => {
   const { opdScheduleId } = req.params;
 
-  const opdSchedule =
-    await OPDSchedule.findById(opdScheduleId).populate("patient");
+  // Validate opdScheduleId
+  if (!opdScheduleId) {
+    return next(new ApiError(400, "Invalid OPD schedule ID"));
+  }
+
+  const opdSchedule = await OPDSchedule.findById(opdScheduleId).populate("patient");
+
   if (!opdSchedule) {
-    return next(new ApiError(404, "OPD schedule not found"));
+    return res.status(404).json({
+      success: false,
+      message: "OPD schedule not found"
+    });
   }
 
   if (opdSchedule.status !== "Waiting") {
@@ -272,27 +304,36 @@ export const allocateBed = asyncHandler(async (req, res, next) => {
     availabilityStatus: "Available",
     bedType: opdSchedule.bedType,
   });
+
   if (!availableBed) {
     return next(new ApiError(400, "No beds available"));
   }
 
-  availableBed.availabilityStatus = "Occupied";
-  availableBed.currentPatient = opdSchedule.patient._id;
-  await availableBed.save();
+  try {
+    availableBed.availabilityStatus = "Occupied";
+    availableBed.currentPatient = opdSchedule.user?._id;
+    await availableBed.save();
 
-  opdSchedule.bed = availableBed._id;
-  opdSchedule.status = "Allocated";
-  await opdSchedule.save();
+    opdSchedule.bed = availableBed._id;
+    opdSchedule.status = "Allocated";
+    await opdSchedule.save();
 
-  await sendNotification(
-    opdSchedule.patient,
-    "Bed Allocated",
-    `Dear ${opdSchedule.patient.name}, a ${availableBed.bedType} bed has been allocated for your OPD appointment. Please proceed to bed number ${availableBed.bedNumber}.`,
-  );
+    await sendNotification(
+      opdSchedule.patient,
+      "Bed Allocated",
+      `Dear ${opdSchedule.patient.name}, a ${availableBed.bedType} bed has been allocated for your OPD appointment. Please proceed to bed number ${availableBed.bedNumber}.`
+    );
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, opdSchedule, "Bed allocated successfully"));
+    res.status(200).json(new ApiResponse(200, opdSchedule, "Bed allocated successfully"));
+  } catch (error) {
+    // Rollback changes if an error occurs
+    if (availableBed) {
+      availableBed.availabilityStatus = "Available";
+      availableBed.currentPatient = null;
+      await availableBed.save();
+    }
+    next(new ApiError(500, "Error allocating bed: " + error.message));
+  }
 });
 
 export const getQueueStatus = asyncHandler(async (req, res, next) => {
