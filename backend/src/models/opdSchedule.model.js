@@ -10,24 +10,28 @@ const opdScheduleSchema = new mongoose.Schema({
         ref: "User",
         required: [true, "Patient ID is required"],
     },
-    doctor: {
-        type: mongoose.Schema.Types.ObjectId,
+    doctorName: {
+        type: mongoose.Schema.Types.String,
         ref: "Doctor",
         required: [true, "Doctor ID is required"],
     },
     checkInDate: {
         type: Date,
+        required: [true, "Check-in date is required"],
     },
     checkOutDate: {
         type: Date,
+    },
+    Description: {
+        type: String,
+        required: true,
+        maxLength: 150,
+        minLength: 1,
     },
     status: {
         type: String,
         enum: ["Waiting", "Allocated", "TemporarilyAllocated", "Completed", "Cancelled"],
         default: "Waiting",
-    },
-    calendlyEventId: {
-        type: String,
     },
     priority: {
         type: Number,

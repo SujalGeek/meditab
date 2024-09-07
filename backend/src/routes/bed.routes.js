@@ -3,7 +3,7 @@ import { createBed, getAllBeds, updateBedStatus, deleteBed } from '../controller
 
 const router = express.Router();
 
-router.post('/beds', createBed);
+router.post('/createBed', createBed);
 router.get('/beds', getAllBeds);
 router.put('/beds/', updateBedStatus);
 router.delete('/beds/', deleteBed);
