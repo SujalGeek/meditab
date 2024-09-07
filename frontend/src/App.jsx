@@ -18,13 +18,18 @@ import {
   PrivacyPolicyPage,
   TermsAndConditionsPage,
   OrderHistoryPage,
-  // Appointment,
   AddtoCart,
   ProductsByCategory,
-  // SingleMedicine,
-  // GoToTop,
   Bot,
 } from "./import-export/ImportExport.js";
+
+import OPDSchedulePage from "./pages/opd/OPDSchedulePage.jsx";
+import AdminOPDManagementPage from "./pages/opd/AdminOPDManagementPage.jsx";
+import PatientProfilePage from "./pages/opd/PatientDashboardPage.jsx";
+import DischargeRequestPage from "./pages/opd/DischargeRequestPage.jsx";
+import PatientDashboardPage from "./pages/opd/PatientDashboardPage.jsx";
+import DoctorPage from "./pages/opd/DoctorPage.jsx";
+import NurseDashboard from "./pages/opd/NurseDashboard.jsx"
 
 function App() {
   return (
@@ -35,9 +40,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/alldoctors" element={<AllDoctorsPage />} />
           {/* <Route path="/appointment" element={<Appointment />} /> */}
-
           <Route path="/specialities" element={<SpecialitiesPage />} />
-
           <Route path="/medicines" element={<MedicinesPage />} />
           <Route
             path="/medicines/shop_by_category/:id"
@@ -45,25 +48,28 @@ function App() {
           />
           {/* <Route path="/buy-medicines/:id" element={<SingleMedicine />} /> */}
           <Route path="/medicines/cart" element={<AddtoCart />} />
-          <Route
-            path="/medicines/order_history"
-            element={<OrderHistoryPage />}
-          />
-
+          <Route path="/medicines/order_history" element={<OrderHistoryPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-
           <Route path="/*" element={<ErrorPage />} />
           <Route path="/faqs" element={<FaqsPage />} />
           <Route path="/aboutus" element={<AboutUsPage />} />
           <Route path="/privacypolicy" element={<PrivacyPolicyPage />} />
-          <Route
-            path="/termsandconditions"
-            element={<TermsAndConditionsPage />}
-          />
+          <Route path="/termsandconditions" element={<TermsAndConditionsPage />} />
+          
+          <Route path="/opd-schedule" element={<OPDSchedulePage />} />
+          <Route path="/admin/opd-management" element={<AdminOPDManagementPage />} />
+          <Route path="/patient-profile" element={<PatientProfilePage />} />
+        <Route path="/opd/discharge-request" element={<DischargeRequestPage />} />
+        <Route path="/patient-dashboard" element={<PatientDashboardPage />} />
+        <Route path="/doctor/dashboard" element={<DoctorPage />} />
+        <Route path="/nurse/dashboard" element={<NurseDashboard />} />
+
+
+
         </Routes>
         <Bot />
-        {/* <GoToTop /> */}
+        
         <Footer />
         <ToastContainer position="top-right" />
       </AppContext>
@@ -72,3 +78,5 @@ function App() {
 }
 
 export default App;
+
+

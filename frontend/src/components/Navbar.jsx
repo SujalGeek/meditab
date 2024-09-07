@@ -75,16 +75,16 @@ function Navbar() {
 
   const socialLinks = [
     {
-      to: "https://github.com/itsmohit097/medi-hub",
+      to: "/",
       label: "github",
       icon: FaGithub,
     },
     {
-      to: "https://www.linkedin.com/in/itsmohit097/",
+      to: "/",
       label: "linkedin",
       icon: FaLinkedinIn,
     },
-    { to: "https://discord.gg/krQd2Fss", label: "discord", icon: FaDiscord },
+    { to: "/", label: "discord", icon: FaDiscord },
   ];
 
   return (

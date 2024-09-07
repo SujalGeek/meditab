@@ -5,6 +5,7 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
+
 function MediHubBot() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
@@ -12,7 +13,7 @@ function MediHubBot() {
   const [theme, setTheme] = useState("light");
   const [error, setError] = useState(null);
 
-  const API_KEY = "YOUR_API_KEY";
+  const API_KEY ="AIzaSyAXqOg46cRlzn3tTHTsRGM_p7H7AJzRXaU";
   const MODEL_NAME = "gemini-1.0-pro-001";
 
   const genAI = new GoogleGenerativeAI(API_KEY);
@@ -64,7 +65,7 @@ function MediHubBot() {
       }
     };
     initChat();
-  }, []);
+  }, [messages]);
 
   const handleSendMessage = async () => {
     try {
@@ -73,36 +74,38 @@ function MediHubBot() {
         role: "user",
         timestamp: new Date(),
       };
-
+  
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       setUserInput("");
-
+  
       if (chat) {
         const input_prompt = `
-        If ${userInput} is informal like "hi"/"hello" etc ,respond like a general chatbot informally and greet back the user.Else,
-        Identify diseases based on the Symptoms given by the user through ${userInput} and also list medicines for the same.
-        If the user is asking general medical doubts like details of any medicine,etc through ${userInput} provide assistance for the same. 
-        Don't give * in response please.
-        Generate response in proper points on new line.
-        
+        If "${userInput}" is informal like "hi"/"hello" etc, respond like a general chatbot informally and greet back the user. 
+        Else, identify diseases based on the symptoms given by the user through "${userInput}" and also list medicines for the same. 
+        If the user is asking general medical doubts like details of any medicine, provide assistance for the same.
+        Generate response in proper points.
         `;
+  
         const result = await chat.sendMessage(input_prompt);
+        console.log(result);
+  
         const botMessage = {
-          text: result.response.text(),
+          text: result.response?.text || "Unable to process response",
           role: "bot",
           timestamp: new Date(),
         };
-
+  
         setMessages((prevMessages) => [...prevMessages, botMessage]);
       }
     } catch (error) {
+      console.error(error);
       setError("Failed to send message. Please try again.");
     }
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); //prevents adding a new line in input field
+      e.preventDefault();
       handleSendMessage();
     }
   };

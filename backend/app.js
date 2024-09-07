@@ -45,6 +45,7 @@ app.use("/api/v1/doctor", doctorRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 app.use("/api/v1/opdSchedule", opdScheduleRouter);
 app.use("/api/v1/bed", bedRouter);
+
 // app.use("/api/v1/medicines", medicineRouter);
 // app.use("/api/v1/medicines-cart", CartRouter)
 // app.use("/api/v1/payment", PaymentRouter)

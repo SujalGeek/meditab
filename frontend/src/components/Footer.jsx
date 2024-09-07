@@ -74,7 +74,7 @@ function Footer() {
             <div className="flex items-center gap-4 mt-10">
               <div className=" border border-white/70 rounded-full px-2 py-2 hover:bg-slate-700/30 cursor-pointer">
                 <a
-                  href="https://www.linkedin.com/in/itsmohit097/"
+                  href="/"
                   target="_blank"
                 >
                   <FaInstagram />
@@ -82,7 +82,7 @@ function Footer() {
               </div>
               <div className=" border border-white/70 rounded-full px-2 py-2 hover:bg-slate-700/30 cursor-pointer">
                 <a
-                  href="https://www.linkedin.com/in/itsmohit097/"
+                  href="/"
                   target="_blank"
                 >
                   <FaLinkedin />
@@ -90,7 +90,7 @@ function Footer() {
               </div>
               <div className=" border border-white/70 rounded-full px-2 py-2 hover:hover:bg-slate-700/30 cursor-pointer">
                 <a
-                  href="https://www.linkedin.com/in/itsmohit097/"
+                  href="/"
                   target="_blank"
                 >
                   <FaXTwitter />
@@ -167,7 +167,7 @@ function Footer() {
         <div className="w-full py-4">
           {/* copyright */}
           <p className="text-sm lg:text-[1rem] font-medium text-center">
-            © {new Date().getFullYear()} Mohit kumar. All rights reserved.
+            © {new Date().getFullYear()} DEPSTAR. All rights reserved.
           </p>
         </div>
       </div>
