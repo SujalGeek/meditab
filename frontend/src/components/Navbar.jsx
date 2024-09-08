@@ -36,9 +36,9 @@ function Navbar() {
   // Nav items
   const navItems = [
     { to: "/alldoctors", label: "All Doctors" },
-    { to: "/specialities", label: "Specialities" },
-    { to: "/medicines", label: "Medicines" },
-    { to: "/appointment", label: "Appointment" },
+    { to: "/past-diagnosis", label: "Past Diagnosis" },  // Updated route
+    { to: "/opd-schedule", label: "OPD Scheduling" },  // Updated route
+    { to: "/patient-dashboard", label: "Appointment" }  // Updated route
   ];
 
   const navLinkClass = ({ isActive }) =>

@@ -21,7 +21,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 
-// Custom styled components for the profile picture
 const ProfilePicture = styled('img')({
   borderRadius: '50%',
   width: '200px',

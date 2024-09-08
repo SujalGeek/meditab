@@ -30,6 +30,7 @@ import DischargeRequestPage from "./pages/opd/DischargeRequestPage.jsx";
 import PatientDashboardPage from "./pages/opd/PatientDashboardPage.jsx";
 import DoctorPage from "./pages/opd/DoctorPage.jsx";
 import NurseDashboard from "./pages/opd/NurseDashboard.jsx"
+import PastDiagnosisPage from './pages/opd/PastDiagnosisPage.jsx';
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
         <Route path="/patient-dashboard" element={<PatientDashboardPage />} />
         <Route path="/doctor/dashboard" element={<DoctorPage />} />
         <Route path="/nurse/dashboard" element={<NurseDashboard />} />
+        <Route path="/past-diagnosis" element={<PastDiagnosisPage />} /> 
 
 
 
