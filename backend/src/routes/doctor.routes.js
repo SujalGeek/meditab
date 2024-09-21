@@ -16,9 +16,9 @@ router.post('/login', doctorLogin);
 
 // Protected routes
 router.post('/register', isAdminAuthenticated, createDoctor);
-router.get('/', isAdminAuthenticated, getDoctors);
-router.get('/:id', isAdminAuthenticated, getDoctorById);
-router.put('/:id', isAdminAuthenticated, updateDoctor);
-router.delete('/:id', isAdminAuthenticated, deleteDoctor);
+router.get('/getdoctors', isAdminAuthenticated, getDoctors);
+router.get('/getdoctorbyid', isAdminAuthenticated, getDoctorById);
+router.put('/updatedoctor', isAdminAuthenticated, updateDoctor);
+router.delete('/deletedoctor', isAdminAuthenticated, deleteDoctor);
 
 export default router;

@@ -13,9 +13,9 @@ const router = express.Router();
 
 router.post("/schedule", scheduleOPD);
 router.get("/schedules", getOPDSchedules);
-router.patch("/schedules/:id/status", updateOPDScheduleStatus);
-router.post("/schedules/:opdScheduleId/allocate-bed", allocateBed);
-router.get("/queue-status/:patientId", getQueueStatus);
+router.patch("/schedules/status", updateOPDScheduleStatus);
+router.post("/schedules/allocate-bed", allocateBed);
+router.get("/queue-status/", getQueueStatus);
 router.post("/process-queue", processQueue);
 router.post("/relocate-patients", checkAndRelocatePatients);
 

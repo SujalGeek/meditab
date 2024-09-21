@@ -2,43 +2,11 @@ import { OPDSchedule } from "../models/opdSchedule.model.js";
 import { Bed } from "../models/bed.model.js";
 import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
-import  asyncHandler  from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import Mailjet from "node-mailjet";
+import { sendNotification } from "../utils/Mailjet.js";
 
-// Initialize Mailjet
-const mailjet = new Mailjet({
-  apiKey: process.env.MAILJET_API_KEY,
-  apiSecret: process.env.MAILJET_API_SECRET,
-});
-
-// Helper function to send email notifications
-const sendNotification = async (recipient, subject, message) => {
-  const request = mailjet.post("send", { version: "v3.1" }).request({
-    Messages: [
-      {
-        From: {
-          Email: "22dce001@charusat.edu.in",
-          Name: "Hospital Admin",
-        },
-        To: [
-          {
-            Email: recipient,
-          },
-        ],
-        Subject: subject,
-        TextPart: message,
-      },
-    ],
-  });
-  try {
-    await request;
-  } catch (error) {
-    console.error("Error sending email", error);
-    throw new ApiError(500, "Failed to send email notification");
-  }
-};
 export const scheduleOPD = asyncHandler(async (req, res, next) => {
   const { patientId, doctorId, checkInDate, bedType, isUrgent } = req.body;
 
@@ -208,7 +176,7 @@ export const getOPDSchedules = asyncHandler(async (req, res, next) => {
 });
 
 export const updateOPDScheduleStatus = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.opdSchedule?._id;
   const { status } = req.body;
 
   const opdSchedule = await OPDSchedule.findById(id).populate("patient");
@@ -256,7 +224,7 @@ export const updateOPDScheduleStatus = asyncHandler(async (req, res, next) => {
 });
 
 export const allocateBed = asyncHandler(async (req, res, next) => {
-  const { opdScheduleId } = req.params;
+  const { opdScheduleId } = req.opdSchedule?._id;
 
   const opdSchedule =
     await OPDSchedule.findById(opdScheduleId).populate("patient");
@@ -296,7 +264,7 @@ export const allocateBed = asyncHandler(async (req, res, next) => {
 });
 
 export const getQueueStatus = asyncHandler(async (req, res, next) => {
-  const { patientId } = req.params;
+  const { patientId } = req.user?._id;
 
   const opdSchedule = await OPDSchedule.findOne({
     patient: patientId,

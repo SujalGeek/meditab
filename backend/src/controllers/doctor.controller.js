@@ -45,7 +45,7 @@ export const getDoctors = asyncHandler(async (req, res, next) => {
 
 // Get a doctor by ID
 export const getDoctorById = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.doctor?._id;
 
     const doctor = await Doctor.findById(id);
     if (!doctor) {
@@ -57,7 +57,7 @@ export const getDoctorById = asyncHandler(async (req, res, next) => {
 
 // Update doctor details
 export const updateDoctor = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.doctor?._id;
     const updateData = req.body;
 
     const doctor = await Doctor.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
@@ -70,7 +70,7 @@ export const updateDoctor = asyncHandler(async (req, res, next) => {
 
 // Delete a doctor
 export const deleteDoctor = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.doctor?._id;
 
     const doctor = await Doctor.findByIdAndDelete(id);
     if (!doctor) {

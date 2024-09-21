@@ -3,9 +3,9 @@ import { createBed, getAllBeds, updateBedStatus, deleteBed } from '../controller
 
 const router = express.Router();
 
-router.post('/beds', createBed);
-router.get('/beds', getAllBeds);
-router.put('/beds/', updateBedStatus);
-router.delete('/beds/', deleteBed);
+router.post('/addbed', createBed);
+router.get('/getbeds', getAllBeds);
+router.put('/statusUpdate', updateBedStatus);
+router.delete('/deletebed', deleteBed);
 
 export default router;

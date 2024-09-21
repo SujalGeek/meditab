@@ -1,43 +1,11 @@
 import { Appointment } from "../models/appointment.model.js";
 import { Doctor } from "../models/doctor.model.js";
 import { User } from "../models/user.model.js";
-import  asyncHandler  from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import Mailjet from "node-mailjet";
+import { sendNotification } from "../utils/Mailjet.js";
 
-// Initialize Mailjet
-const mailjet = new Mailjet({
-  apiKey: process.env.MAILJET_API_KEY,
-  apiSecret: process.env.MAILJET_API_SECRET,
-});
-
-// Helper function to send email notifications
-const sendNotification = async (recipient, subject, message) => {
-  const request = mailjet.post("send", { version: "v3.1" }).request({
-    Messages: [
-      {
-        From: {
-          Email: "hospital@example.com",
-          Name: "Hospital Admin",
-        },
-        To: [
-          {
-            Email: recipient,
-          },
-        ],
-        Subject: subject,
-        TextPart: message,
-      },
-    ],
-  });
-  try {
-    await request;
-  } catch (error) {
-    console.error("Error sending email", error);
-    throw new ApiError(500, "Failed to send email notification");
-  }
-};
 // Create a new appointment
 export const createAppointment = asyncHandler(async (req, res, next) => {
   const {
@@ -91,7 +59,7 @@ export const createAppointment = asyncHandler(async (req, res, next) => {
   await sendNotification(
     existingPatient.email,
     "Appointment Scheduled",
-    `Dear ${existingPatient.firstName}, your appointment with Dr. ${existingDoctor.doctorName} has been scheduled for ${appointmentDate}.`,
+    `Dear ${existingPatient.userName}, your appointment with Dr. ${existingDoctor.doctorName} has been scheduled for ${appointmentDate}.`,
   );
 
   res
@@ -104,7 +72,7 @@ export const createAppointment = asyncHandler(async (req, res, next) => {
 // Get all appointments
 export const getAppointments = asyncHandler(async (req, res, next) => {
   const appointments = await Appointment.find()
-    .populate("patient", "firstName lastName email")
+    .populate("patient", "userName email")
     .populate("doctor", "doctorName");
 
   res
@@ -116,10 +84,10 @@ export const getAppointments = asyncHandler(async (req, res, next) => {
 
 // Get a single appointment by ID
 export const getAppointmentById = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.appointment?._id;
 
   const appointment = await Appointment.findById(id)
-    .populate("patient", "firstName lastName email")
+    .populate("patient", "userName email")
     .populate("doctor", "doctorName");
 
   if (!appointment) {
@@ -135,7 +103,7 @@ export const getAppointmentById = asyncHandler(async (req, res, next) => {
 
 // Update appointment status
 export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.appointment?._id;
   const { status } = req.body;
 
   const appointment = await Appointment.findById(id).populate(
@@ -170,8 +138,7 @@ export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
 
 // Delete an appointment
 export const deleteAppointment = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
+  const { id } = req.appointment?._id;
   const appointment = await Appointment.findByIdAndDelete(id);
 
   if (!appointment) {
@@ -207,7 +174,7 @@ export const checkDoctorAvailability = async (doctorId, appointmentDate) => {
   });
   // If the doctor has reached their appointment limit, return false
   if (existingAppointments >= 25) {
-    // Assuming each doctor can handle 10 appointments per day
+    // Assuming each doctor can handle 25 appointments per day
     return false;
   } else {
     // If the doctor is available, return true

@@ -23,7 +23,7 @@ export const getAllBeds = asyncHandler(async (req, res, next) => {
 });
 
 export const updateBedStatus = asyncHandler(async (req, res, next) => {
-    const { id } = req.bed._id;
+    const { id } = req.bed?._id;
     const { availabilityStatus } = req.body;
 
     const bed = await Bed.findByIdAndUpdate(id, { availabilityStatus }, { new: true });
@@ -36,7 +36,7 @@ export const updateBedStatus = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteBed = asyncHandler(async (req, res, next) => {
-    const { id } = req.bed._id;
+    const { id } = req.bed?._id;
     const bed = await Bed.findByIdAndDelete(id);
 
     if (!bed) {
