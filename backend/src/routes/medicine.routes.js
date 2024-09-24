@@ -17,13 +17,13 @@ const router = express.Router();
 
 // routes of admin
 router.post("/addmedicine", isAdminAuthenticated, upload.single("image"), addNewMedicine);
-router.delete("/delete-medicine/:id", isAdminAuthenticated, deleteMedicine);
-router.put("/update-medicine/:id", isAdminAuthenticated, updateMedicine);
+router.delete("/delete-medicine", isAdminAuthenticated, deleteMedicine);
+router.put("/update-medicine", isAdminAuthenticated, updateMedicine);
 
 // routes of user
-router.get("/get/:id", getSingleMedicine);
+router.get("/getSingleMedicine", getSingleMedicine);
 router.get("/shop-by-category/:category", getCategoryMedicines);
-router.get("/discount", getHighDiscountMedicines)
+// router.get("/discount", getHighDiscountMedicines)
 
 router.get("/search-medicine", searchMedicine);
 

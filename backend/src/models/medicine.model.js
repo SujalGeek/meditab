@@ -1,6 +1,6 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const medicineSchema = new Schema({
+const medicineSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Medicine Name is required"],
@@ -34,7 +34,7 @@ const medicineSchema = new Schema({
     },
     image: {
         type: String, // cloudinary url
-        required: [true, "Image is required"],
+        // required: [true, "Image is required"],
     },
     discount: {
         type: Number,
@@ -42,4 +42,4 @@ const medicineSchema = new Schema({
     }
 }, { timestamps: true });
 
-export const Medicine = model("Medicine", medicineSchema);
+export const Medicine = mongoose.model("Medicine", medicineSchema);

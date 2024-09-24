@@ -47,7 +47,8 @@ export const addNewMedicine = asyncHandler(async (req, res) => {
 
 //! delete medicine by admin only
 export const deleteMedicine = asyncHandler(async (req, res) => {
-    const medicine = await Medicine.findByIdAndDelete(req.params.id);
+    const{ id } = req.medicine?._id;
+    const medicine = await Medicine.findByIdAndDelete(id);
     if (!medicine) {
         throw new ApiError(404, "Medicine not found");
     }
@@ -58,6 +59,7 @@ export const deleteMedicine = asyncHandler(async (req, res) => {
 //! update medicine by admin only
 export const updateMedicine = asyncHandler(async (req, res) => {
     // only 3 parameters can be updated by admin else create a new medicine
+    const{ id } = req.medicine?._id;
     const { price, stock, discount } = req.body;
 
     // Ensure at least one field is provided
@@ -72,7 +74,7 @@ export const updateMedicine = asyncHandler(async (req, res) => {
     if (discount !== undefined) updateFields.discount = discount;
 
     const medicine = await Medicine.findByIdAndUpdate(
-        req.params.id,
+       id,
         updateFields,
         {
             new: true,
@@ -87,17 +89,17 @@ export const updateMedicine = asyncHandler(async (req, res) => {
 
 
 //! get all high discount medicines by user
-export const getHighDiscountMedicines = asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 12;
-    const skip = (page - 1) * limit;
-    const medicines = await Medicine.find({ discount: { $gte: 10 } }).skip(skip)
-        .limit(limit);
-    if (!medicines) {
-        throw new ApiError(404, "No medicines found");
-    }
-    return res.json(new ApiResponse(200, medicines, "Medicines fetched successfully!"));
-});
+// export const getHighDiscountMedicines = asyncHandler(async (req, res) => {
+//     const page = parseInt(req.query.page, 10) || 1;
+//     const limit = parseInt(req.query.limit, 10) || 12;
+//     const skip = (page - 1) * limit;
+//     const medicines = await Medicine.find({ discount: { $gte: 10 } }).skip(skip)
+//         .limit(limit);
+//     if (!medicines) {
+//         throw new ApiError(404, "No medicines found");
+//     }
+//     return res.json(new ApiResponse(200, medicines, "Medicines fetched successfully!"));
+// });
 
 
 //! get category medicines by user
@@ -122,7 +124,8 @@ export const getCategoryMedicines = asyncHandler(async (req, res) => {
 
 //! get single medicine by user
 export const getSingleMedicine = asyncHandler(async (req, res) => {
-    const medicine = await Medicine.findById(req.params.id);
+    const { id } = req.medicine?._id;
+    const medicine = await Medicine.findById(id);
     if (!medicine) {
         throw new ApiError(404, "Medicine not found");
     }
